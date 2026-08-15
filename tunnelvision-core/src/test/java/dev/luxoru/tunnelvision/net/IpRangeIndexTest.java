@@ -32,7 +32,7 @@ class IpRangeIndexTest {
     @Test
     void ipv4AndIpv6DoNotCollide() {
         // IPv4 lives in ::ffff:0:0/96, so the old IPv4-compatible block ::/96 must not match it
-        IpRangeIndex index = IpRangeIndex.parse(List.of("::/8"));
+        IpRangeIndex index = IpRangeIndex.parse(List.of("::/96"));
         assertThat(index.contains(ip("1.2.3.4"))).isFalse();
         assertThat(index.contains(ip("::1.2.3.4"))).isTrue();
     }
