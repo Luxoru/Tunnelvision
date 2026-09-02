@@ -1,0 +1,78 @@
+tunnelvision:
+  refresh-enabled: true
+  snapshot-directory: data/sources # The last good copy of each source, leave blank to keep nothing on disk
+  allowlist: [] # Addresses and CIDR blocks that are always clean
+
+  sources:
+    disabled: [] # Built-in sources to skip: tor, x4b-vpn, x4b-datacenter
+    custom: []
+    # - id: my-denylist
+    #   name: My denylist
+    #   category: ABUSE # VPN, TOR, RELAY, PROXY, HOSTING or ABUSE
+    #   confidence: CONFIRMED
+    #   entries: [ "198.51.100.0/24" ] # A static list...
+    # - id: some-proxy-list
+    #   category: PROXY
+    #   urls: [ "https://example.com/proxies.txt" ] # ...or plain-text lists, one entry per line
+    #   refresh-interval: 6h
+
+  # When verdict.blocked is true
+  policy:
+    block-categories: [ VPN, TOR, PROXY ]
+    risk-threshold: 1.0 # Also block at or above this risk, above 1 to disable
+
+  # The risk each signal contributes, from 0 to 1, the strongest one wins.
+  # Only list the ones you want to change, the rest keep these defaults.
+  weights:
+    confirmed:
+      vpn: 1.0
+      tor: 1.0
+      proxy: 0.9
+      abuse: 0.9
+      hosting: 0.5
+      relay: 0.1
+    likely: # Likely matches use the confirmed weight unless set here
+      vpn: 0.75
+
+  # Guards against bad upstream data
+  guard:
+    min-retained-ratio: 0.5 # Reject a refresh with fewer than half the entries of the last one
+    max-unsafe-ratio: 0.01 # Reject a refresh if over 1% of its entries are too broad or reserved
+    stale-after-multiplier: 3 # Ignore a source once its data is 3 refresh intervals old...
+    min-stale-after: 24h # ...but never sooner than this
+    retry-delay: 1m
+
+# There's no authentication, so only expose this port to the applications that call it
+server:
+  port: 8080
+  shutdown: graceful
+
+management:
+  server:
+    port: 8081 # Probes and metrics stay off the public port
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState, sources
+  info:
+    build:
+      enabled: true
+
+spring:
+  application:
+    name: tunnelvision
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
