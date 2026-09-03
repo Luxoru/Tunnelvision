@@ -18,6 +18,7 @@ COPY --from=build /extracted/spring-boot-loader/ ./
 COPY --from=build /extracted/snapshot-dependencies/ ./
 COPY --from=build /extracted/application/ ./
 
+RUN mkdir -p data config && chown -R tunnelvision:tunnelvision data config
 USER 10001
 
 ENV TUNNELVISION_SNAPSHOT_DIRECTORY=/app/data/sources
