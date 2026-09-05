@@ -40,7 +40,7 @@ tunnelvision:
     max-unsafe-ratio: 0.01 # Reject a refresh if over 1% of its entries are too broad or reserved
     stale-after-multiplier: 3 # Ignore a source once its data is 3 refresh intervals old...
     min-stale-after: 24h # ...but never sooner than this
-    retry-delay: 1m
+    retry-delay: 5m
 
 # There's no authentication, so only expose this port to the applications that call it
 server:
