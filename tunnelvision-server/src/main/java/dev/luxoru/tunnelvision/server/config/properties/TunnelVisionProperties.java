@@ -1,5 +1,6 @@
 package dev.luxoru.tunnelvision.server.config.properties;
 
+import dev.luxoru.tunnelvision.server.config.properties.cache.CacheProperties;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -14,6 +15,7 @@ public record TunnelVisionProperties(
     SourcesProperties sources,
     PolicyProperties policy,
     WeightsProperties weights,
-    GuardProperties guard
+    GuardProperties guard,
+    CacheProperties cache
 ) {
 }

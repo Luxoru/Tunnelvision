@@ -42,6 +42,12 @@ tunnelvision:
     min-stale-after: 24h # ...but never sooner than this
     retry-delay: 5m
 
+  cache:
+    type: caffeine # none or caffeine
+    ttl: 10m
+    caffeine:
+      max-size: 100000
+
 # There's no authentication, so only expose this port to the applications that call it
 server:
   port: 8080

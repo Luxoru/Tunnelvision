@@ -1,9 +1,11 @@
 package dev.luxoru.tunnelvision.server.config;
 
 import dev.luxoru.tunnelvision.TunnelVision;
+import dev.luxoru.tunnelvision.cache.CaffeineVerdictCache;
 import dev.luxoru.tunnelvision.cache.VerdictCache;
 import dev.luxoru.tunnelvision.detection.BlockPolicy;
 import dev.luxoru.tunnelvision.detection.Weights;
+import dev.luxoru.tunnelvision.server.config.properties.cache.CacheProperties;
 import dev.luxoru.tunnelvision.server.config.properties.CustomSourceProperties;
 import dev.luxoru.tunnelvision.server.config.properties.TunnelVisionProperties;
 import dev.luxoru.tunnelvision.source.DetectionSource;
@@ -74,7 +76,11 @@ public class TunnelVisionConfiguration {
     }
 
     @Bean
-    public VerdictCache verdictCache() {
-        return VerdictCache.none();
+    public VerdictCache verdictCache(TunnelVisionProperties properties) {
+        CacheProperties cache = properties.cache();
+        return switch (cache.type()) {
+            case NONE -> VerdictCache.none();
+            case CAFFEINE -> new CaffeineVerdictCache(cache.ttl(), cache.caffeine().maxSize());
+        };
     }
 }

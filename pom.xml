@@ -15,6 +15,7 @@
 
     <modules>
         <module>tunnelvision-core</module>
+        <module>tunnelvision-cache-caffeine</module>
         <module>tunnelvision-server</module>
     </modules>
 
