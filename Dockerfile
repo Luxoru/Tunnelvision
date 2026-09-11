@@ -4,6 +4,7 @@ FROM --platform=$BUILDPLATFORM maven:3.9-eclipse-temurin-25 AS build
 WORKDIR /build
 COPY pom.xml ./
 COPY tunnelvision-core/ tunnelvision-core/
+COPY tunnelvision-cache-caffeine/ tunnelvision-cache-caffeine/
 COPY tunnelvision-server/ tunnelvision-server/
 RUN --mount=type=cache,target=/root/.m2 mvn -B -q package -DskipTests \
     && java -Djarmode=tools -jar tunnelvision-server/target/tunnelvision-server.jar extract --layers --launcher --destination /extracted
