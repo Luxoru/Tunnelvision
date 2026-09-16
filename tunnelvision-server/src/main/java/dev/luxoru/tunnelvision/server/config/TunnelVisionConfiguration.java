@@ -2,6 +2,7 @@ package dev.luxoru.tunnelvision.server.config;
 
 import dev.luxoru.tunnelvision.TunnelVision;
 import dev.luxoru.tunnelvision.cache.CaffeineVerdictCache;
+import dev.luxoru.tunnelvision.cache.RedisVerdictCache;
 import dev.luxoru.tunnelvision.cache.VerdictCache;
 import dev.luxoru.tunnelvision.detection.BlockPolicy;
 import dev.luxoru.tunnelvision.detection.Weights;
@@ -81,6 +82,7 @@ public class TunnelVisionConfiguration {
         return switch (cache.type()) {
             case NONE -> VerdictCache.none();
             case CAFFEINE -> new CaffeineVerdictCache(cache.ttl(), cache.caffeine().maxSize());
+            case REDIS -> new RedisVerdictCache(cache.redis().uri(), cache.redis().prefix(), cache.ttl());
         };
     }
 }

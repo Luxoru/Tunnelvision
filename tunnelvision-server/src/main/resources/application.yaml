@@ -43,10 +43,13 @@ tunnelvision:
     retry-delay: 5m
 
   cache:
-    type: caffeine # none or caffeine
+    type: caffeine # none, caffeine or redis
     ttl: 10m
     caffeine:
       max-size: 100000
+    redis:
+      uri: "redis://localhost:6379" # redis://:password@host:6379/0, rediss:// for TLS
+      prefix: "tunnelvision:verdict:"
 
 # There's no authentication, so only expose this port to the applications that call it
 server:

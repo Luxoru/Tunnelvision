@@ -1,0 +1,32 @@
+# Local development: TunnelVision with a Valkey (Redis-compatible) cache
+#   docker compose up -d --build
+#   curl localhost:8080/v1/check/1.1.1.1
+services:
+  tunnelvision:
+    build: .
+    image: tunnelvision:local
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      TUNNELVISION_CACHE_TYPE: redis
+      TUNNELVISION_CACHE_REDIS_URI: redis://valkey:6379
+    volumes:
+      - tunnelvision-data:/app/data
+    depends_on:
+      valkey:
+        condition: service_healthy
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+    command: [ "valkey-server", "--save", "", "--appendonly", "no", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru" ]
+    healthcheck:
+      test: [ "CMD", "valkey-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  tunnelvision-data:

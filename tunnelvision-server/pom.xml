@@ -35,6 +35,10 @@
             <groupId>dev.luxoru.tunnelvision</groupId>
             <artifactId>tunnelvision-cache-caffeine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>dev.luxoru.tunnelvision</groupId>
+            <artifactId>tunnelvision-cache-redis</artifactId>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
