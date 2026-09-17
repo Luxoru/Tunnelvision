@@ -21,7 +21,7 @@ services:
   valkey:
     image: valkey/valkey:8-alpine
     restart: unless-stopped
-    command: [ "valkey-server", "--save", "", "--appendonly", "no", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru" ]
+    command: [ "valkey-server", "--save", "", "--appendonly", "no", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru" ]
     healthcheck:
       test: [ "CMD", "valkey-cli", "ping" ]
       interval: 10s
