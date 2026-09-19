@@ -1,14 +1,11 @@
-# Local development: TunnelVision with a Valkey (Redis-compatible) cache
-#   docker compose up -d --build
-#   curl localhost:8080/v1/check/1.1.1.1
 services:
   tunnelvision:
     build: .
     image: tunnelvision:local
     restart: unless-stopped
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8081"
     environment:
       TUNNELVISION_CACHE_TYPE: redis
       TUNNELVISION_CACHE_REDIS_URI: redis://valkey:6379
