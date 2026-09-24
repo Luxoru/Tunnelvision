@@ -6,6 +6,7 @@ COPY pom.xml ./
 COPY tunnelvision-core/ tunnelvision-core/
 COPY tunnelvision-cache-caffeine/ tunnelvision-cache-caffeine/
 COPY tunnelvision-cache-redis/ tunnelvision-cache-redis/
+COPY tunnelvision-cache-hazelcast/ tunnelvision-cache-hazelcast/
 COPY tunnelvision-server/ tunnelvision-server/
 RUN --mount=type=cache,target=/root/.m2 mvn -B -q package -DskipTests \
     && java -Djarmode=tools -jar tunnelvision-server/target/tunnelvision-server.jar extract --layers --launcher --destination /extracted

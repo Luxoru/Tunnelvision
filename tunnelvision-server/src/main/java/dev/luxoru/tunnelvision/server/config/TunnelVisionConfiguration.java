@@ -1,13 +1,20 @@
 package dev.luxoru.tunnelvision.server.config;
 
+import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import dev.luxoru.tunnelvision.TunnelVision;
 import dev.luxoru.tunnelvision.cache.CaffeineVerdictCache;
+import dev.luxoru.tunnelvision.cache.HazelcastVerdictCache;
 import dev.luxoru.tunnelvision.cache.RedisVerdictCache;
 import dev.luxoru.tunnelvision.cache.VerdictCache;
 import dev.luxoru.tunnelvision.detection.BlockPolicy;
 import dev.luxoru.tunnelvision.detection.Weights;
 import dev.luxoru.tunnelvision.server.config.properties.cache.CacheProperties;
 import dev.luxoru.tunnelvision.server.config.properties.CustomSourceProperties;
+import dev.luxoru.tunnelvision.server.config.properties.cache.impl.HazelcastMode;
 import dev.luxoru.tunnelvision.server.config.properties.TunnelVisionProperties;
 import dev.luxoru.tunnelvision.source.DetectionSource;
 import dev.luxoru.tunnelvision.source.Sources;
@@ -17,6 +24,7 @@ import dev.luxoru.tunnelvision.source.list.StaticSource;
 import dev.luxoru.tunnelvision.source.snapshot.FileSnapshotStore;
 import dev.luxoru.tunnelvision.source.snapshot.SnapshotStore;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -77,12 +85,21 @@ public class TunnelVisionConfiguration {
     }
 
     @Bean
-    public VerdictCache verdictCache(TunnelVisionProperties properties) {
+    public VerdictCache verdictCache(TunnelVisionProperties properties, ObjectProvider<HazelcastInstance> hazelcast) {
         CacheProperties cache = properties.cache();
         return switch (cache.type()) {
             case NONE -> VerdictCache.none();
             case CAFFEINE -> new CaffeineVerdictCache(cache.ttl(), cache.caffeine().maxSize());
             case REDIS -> new RedisVerdictCache(cache.redis().uri(), cache.redis().prefix(), cache.ttl());
+            case HAZELCAST -> new HazelcastVerdictCache(hazelcast.getObject(), cache.hazelcast().mapName(), cache.ttl());
         };
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    @ConditionalOnProperty(name = "tunnelvision.cache.type", havingValue = "hazelcast")
+    public HazelcastInstance hazelcastInstance(TunnelVisionProperties properties) {
+        return properties.cache().hazelcast().mode() == HazelcastMode.CLIENT
+            ? HazelcastClient.newHazelcastClient(ClientConfig.load())
+            : Hazelcast.newHazelcastInstance(Config.load());
     }
 }

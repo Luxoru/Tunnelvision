@@ -1,0 +1,7 @@
+hazelcast-client:
+  cluster-name: tunnelvision
+  properties:
+    hazelcast.logging.type: slf4j
+  network:
+    cluster-members:
+      - 127.0.0.1:5701

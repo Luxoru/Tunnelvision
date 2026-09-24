@@ -1,0 +1,19 @@
+# Used when tunnelvision.cache.type is hazelcast. To change it, put your own hazelcast.yaml in the working directory
+# (/app in the container), starting from a copy of this one. Docs: https://docs.hazelcast.com/hazelcast/latest/configuration/understanding-configuration
+hazelcast:
+  cluster-name: tunnelvision
+  properties:
+    hazelcast.logging.type: slf4j
+    hazelcast.phone.home.enabled: false
+    hazelcast.shutdownhook.enabled: false # Spring shuts it down
+  network:
+    join:
+      # Each instance runs alone until you pick a way for them to find each other:
+      multicast:
+        enabled: false
+      # tcp-ip:
+      #   enabled: true
+      #   member-list: [ 10.0.0.1, 10.0.0.2 ]
+      # kubernetes: # https://docs.hazelcast.com/hazelcast/latest/kubernetes/kubernetes-auto-discovery
+      #   enabled: true
+      #   service-dns: tunnelvision-hazelcast.default.svc.cluster.local

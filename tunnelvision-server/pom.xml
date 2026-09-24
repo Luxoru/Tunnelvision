@@ -39,6 +39,10 @@
             <groupId>dev.luxoru.tunnelvision</groupId>
             <artifactId>tunnelvision-cache-redis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>dev.luxoru.tunnelvision</groupId>
+            <artifactId>tunnelvision-cache-hazelcast</artifactId>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
