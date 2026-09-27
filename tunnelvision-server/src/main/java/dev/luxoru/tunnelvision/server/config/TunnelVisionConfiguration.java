@@ -9,6 +9,7 @@ import dev.luxoru.tunnelvision.TunnelVision;
 import dev.luxoru.tunnelvision.cache.CaffeineVerdictCache;
 import dev.luxoru.tunnelvision.cache.HazelcastVerdictCache;
 import dev.luxoru.tunnelvision.cache.RedisVerdictCache;
+import dev.luxoru.tunnelvision.cache.TieredVerdictCache;
 import dev.luxoru.tunnelvision.cache.VerdictCache;
 import dev.luxoru.tunnelvision.detection.BlockPolicy;
 import dev.luxoru.tunnelvision.detection.Weights;
@@ -87,12 +88,16 @@ public class TunnelVisionConfiguration {
     @Bean
     public VerdictCache verdictCache(TunnelVisionProperties properties, ObjectProvider<HazelcastInstance> hazelcast) {
         CacheProperties cache = properties.cache();
-        return switch (cache.type()) {
+        VerdictCache shared = switch (cache.type()) {
             case NONE -> VerdictCache.none();
             case CAFFEINE -> new CaffeineVerdictCache(cache.ttl(), cache.caffeine().maxSize());
             case REDIS -> new RedisVerdictCache(cache.redis().uri(), cache.redis().prefix(), cache.ttl());
             case HAZELCAST -> new HazelcastVerdictCache(hazelcast.getObject(), cache.hazelcast().mapName(), cache.ttl());
         };
+        if (cache.type().isRemote() && cache.local().enabled()) {
+            return new TieredVerdictCache(new CaffeineVerdictCache(cache.local().ttl(), cache.local().maxSize()), shared);
+        }
+        return shared;
     }
 
     @Bean(destroyMethod = "shutdown")

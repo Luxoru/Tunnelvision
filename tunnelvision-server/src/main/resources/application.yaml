@@ -45,6 +45,10 @@ tunnelvision:
   cache:
     type: caffeine # none, caffeine, redis or hazelcast
     ttl: 10m
+    local: # An in-process cache in front of redis or hazelcast
+      enabled: false
+      ttl: 30s
+      max-size: 10000
     caffeine:
       max-size: 100000
     redis:
