@@ -1,7 +1,7 @@
 # TunnelVision
 
 TunnelVision tells you whether an IP address is a VPN, Tor exit, proxy, datacenter or known-abusive network. It uses
-only free, public data and tries hard **not** too flag regular users.
+only free, public data and tries hard **not** to flag regular users.
 
 It can be used mainly in 2 ways:
 
@@ -56,7 +56,7 @@ if (tunnelVision.check(player.getAddress().getAddress()).blocked()) {
 }
 ```
 
-Lookups run in memory. They are a binary search over merged rangse, so they take well under a microsecond and are safe to
+Lookups run in memory. They are a binary search over merged ranges, so they take well under a microsecond and are safe to
 call from any thread, including an event loop. Private and reserved addresses come back clean with `status: RESERVED`
 and never throw, so LAN connections are fine.
 
