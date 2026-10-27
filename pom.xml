@@ -33,7 +33,7 @@
 
         <!-- Libraries -->
         <spring-boot.version>4.1.1</spring-boot.version>
-        <jspecify.version>1.0.0</jspecify.version>
+        <jspecify.version>1.0.1</jspecify.version>
         <!-- Logging, kept in line with Spring Boot's so the server doesn't mix versions -->
         <slf4j.version>2.0.18</slf4j.version>
         <log4j.version>2.25.5</log4j.version>
